@@ -8,14 +8,19 @@ import random
 from sklearn.externals import joblib
 from sklearn.decomposition import PCA
 
-with open('Data_Files\Training.csv', 'r', ) as f:
+# The below portion is used to generalize this program for use on any computer
+import os
+script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+data_folder_path = os.path.join(script_dir, "Data Files")
+
+with open(os.path.join(data_folder_path, "Training.csv"), 'r', ) as f:
     reader = csv.reader(f)
     rows1 = [row for row in reader]
     column = [row[1] for row in reader]
     a=len(rows1)
 rows1=np.array(rows1)
 
-with open('Data_Files\Test1.csv', 'r', ) as g:
+with open(os.path.join(data_folder_path, "Test1.csv"), 'r', ) as g:
     reader = csv.reader(g)
     rows2 = [row for row in reader]
     column = [row[1] for row in reader]
