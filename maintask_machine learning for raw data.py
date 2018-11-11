@@ -8,23 +8,17 @@ import random
 from sklearn.externals import joblib
 from sklearn.decomposition import PCA
 
-with open('E:\python\maintask\maintask7\Training.csv', 'r', ) as f:
+with open('Training.csv', 'r', ) as f:
 	reader = csv.reader(f)
 	rows1 = [row for row in reader]
+    # is rows ne
 	column = [row[1] for row in reader]
 	a=len(rows1)
 rows1=np.array(rows1)
 
-with open('E:\python\maintask\maintask7\Test1.csv', 'r', ) as g:
-	reader = csv.reader(g)
-	rows2 = [row for row in reader]
-	column = [row[1] for row in reader]
-	a=len(rows2)
-rows2=np.array(rows2)
 
-
-X=rows1[:,1:len(rows1[0])-2]
-y=rows1[:,len(rows1[0])-1]
+X=rows1[1:len(rows1[0])-2]
+y=rows1[len(rows1)-1]
 print(len(X))
 X=X.astype(float)
 y=y.astype(float)
@@ -72,22 +66,3 @@ for i in range(0,len(M)):
 	if clf.predict([M[i]]) == 1:
 		k=k+1
 print(k, i)
-
-#for i in range(0,len(XX2)):
-#	if clf.predict_proba([XX2[i]])[0,0]<0.15 or clf.predict_proba([XX2[i]])[0,0]>0.85:
-#		XX1=np.row_stack((XX1, XX2[i]))
-#		yy1=np.insert(yy1, len(yy1), values=clf.predict([XX2[i]]), axis=0)
-#clf.fit(XX1, yy1)
-
-#count=0
-#for i in range(0,len(XX2)):
-#	if clf.predict([XX2[i]])==yy2[i]:
-#		count=count+1
-#	print(clf.predict([XX2[i]]), yy2[i])
-#if count/len(yy2)*100>50:
-#	print(count/len(yy2)*100)
-#	print(count,len(yy2))
-
-#l=clf.feature_importances_
-#print(l)
-#print(len(l))
