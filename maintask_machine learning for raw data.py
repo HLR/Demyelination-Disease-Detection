@@ -8,11 +8,16 @@ import random
 from sklearn.externals import joblib
 from sklearn.decomposition import PCA
 
+
+
 # The below portion is used to generalize this program for use on any computer
 import os
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 data_folder_path = os.path.join(script_dir, "Data Files")
 
+
+#Everything below this comment contains legacy code that we used to start understanding our project.
+#We did have some problems with running this code, so we are primarily using this code as reference.
 with open(os.path.join(data_folder_path, "Training.csv"), 'r', ) as f:
     reader = csv.reader(f)
     rows1 = [row for row in reader]
