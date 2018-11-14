@@ -72,9 +72,27 @@ def read_in_array(fileName, numX = 100):
     return (X, y)
 
 training_tuple = read_in_array("Training.csv", 1950)
-test1_tuple = read_in_array("Test1.csv", 1950)
-
-
-svmModel = svm.SVC()
-svmModel.fit(training_tuple[0], training_tuple[1])
-print(svmModel.score(test1_tuple[0], test1_tuple[1]))
+"""
+print(len(training_tuple[0]))
+correct_counter = 0
+iteration_counter = 0
+for i in range(len(training_tuple[0])):
+    iteration_counter += 1
+    
+    svmModel = svm.SVC()
+    holderX = []
+    holderY = []
+    
+    for j in range(len(training_tuple[0])):
+        if i != j:
+            holderX = np.delete(training_tuple[0].copy(), i)
+            holderY = np.delete(training_tuple[1].copy(), i)
+    
+    svmModel.fit(holderX, holderY)
+    prediction_result = svmModel.predict([training_tuple[0][i]])
+    # print(str(prediction_result) + "   " + str(i) + "   " + training_tuple[1][i])
+    if prediction_result[0] == training_tuple[1][i]:
+        correct_counter = correct_counter + 1
+print(iteration_counter)
+print(correct_counter / len(training_tuple[0]))
+"""
