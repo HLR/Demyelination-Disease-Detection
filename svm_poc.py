@@ -18,7 +18,6 @@ from sklearn import svm
 import csv
 import os
 import numpy as np
-from sklearn.datasets import load_iris
 
 def read_in_array(fileName, numX = 100):
     """
@@ -71,46 +70,16 @@ def read_in_array(fileName, numX = 100):
     # print(y)
     return (X, y)
 
-training_tuple = read_in_array("Training.csv", 1950)
+training_tuple = read_in_array("trainingsignals.csv", 1950)
+trainingdata = training_tuple[0]
+trainingcats = training_tuple[1]
 
-# Internal testing! Why is it always wrong when I plug in our dataset?
-"""
-The block below is supposed to train an svmModel on every element in the training
-set besides one (our index i), then attempt to predict the category of that i.
-It shows that the iris dataset is 97.3% accurate in this training scheme,
-but 0% accurate on ours and I am curious as to why.
+svmModel = svm.SVC()
 
-Comments are in quotes, but code adjustments to switch to our dataset are in
-# comments.
-"""
-iris = load_iris()
-#comment out when issues with my code are resolved
+svmModel.fit(trainingdata,trainingcats)
 
-correct_counter = 0
-for i in range(len(iris.target)):
-    # replace iris.target with training_tuple[0]
-    
-    """Create a fresh SVC model per interation"""
-    svmModel = svm.SVC()
-    
-    """Here we load all but one elements into training arrays"""
-    # holderX = np.delete(training_tuple[0].copy(), i, 0)
-    holderX = np.delete(iris.data.copy(), i, 0)
-    # holderY = np.delete(training_tuple[1].copy(), i)
-    holderY = np.delete(iris.target.copy(), i)
-    
-    """We train on these all-but-ones"""
-    svmModel.fit(holderX, holderY)
-    
-    """We predict the but-one datapoint's category, then compare it to
-    the answer, then tally"""
-    #prediction_result = svmModel.predict([training_tuple[0][i]])
-    prediction_result = svmModel.predict([iris.data[i]])
-    # print(str(prediction_result) + "   " + str(i) + "   " + str(iris.target[i]))
-    
-    if prediction_result[0] == iris.target[i]:
-        correct_counter = correct_counter + 1
+testing_tuple = read_in_array("testingsignals.csv", 1950)
+testingdata = testing_tuple[0]
+testingcats = testing_tuple[1]
 
-"""Prints the ratio of correctness"""
-print(correct_counter / len(iris.target))
-# replace iris.target with training_tuple[0]
+print(svmModel.predict(testingdata))
