@@ -13,8 +13,10 @@ Notes about the csv files!
     The Targets are manually set, and eventually a target file will be created
     for each corresponding data file.
 """
-
+from sklearn.preprocessing import StandardScaler 
+from sklearn.neural_network import MLPClassifier
 from sklearn import svm
+from sklearn import ensemble
 import csv
 import os
 import numpy as np
@@ -27,39 +29,67 @@ from sklearn.externals import joblib
 import csv_processors
 
 def known_data_conjoiners(arrays, respective_categories):
+    """
+    This function takes in arrays, a set of arrays, each containing
+    one target category of data,
+    as well as respective_categories, an array whose values at an indices
+    represent arrays' category at the same index
+    
+    This function returns a tuple that easily pops into many machine learning
+    functions provided by scikit
+        returnX= the concatenated sample list
+        returnY= the generated target list
+    """
+    
+    # initialize returned arrays
     returnX = []
     returnY = []
-    print(len(arrays))
+    
+    # build said arrays by taking all samples from arrays--the input,
+    # extracting relevant features, and then jamming that into return X
+    # At the end of processing our sample, throw its category into return Y
     for i in range(len(arrays)):
         imax = np.amax(arrays[i], axis = 1)
         imin = np.amin(arrays[i], axis = 1)
         imaxi = np.argmax(arrays[i], axis = 1)
         imini = np.argmin(arrays[i], axis = 1)
+        
         for j in range(len(arrays[i])):
-            addPoint = []
-            addPoint.append(imax[j])
-            addPoint.append(imin[j])
-            addPoint.append(imaxi[j])
-            addPoint.append(imini[j])
-            returnX.append(addPoint)
+            addSample = []
+            addSample.append(imax[j])
+            addSample.append(imin[j])
+            addSample.append(imaxi[j])
+            addSample.append(imini[j])
+            returnX.append(addSample)
             returnY.append(respective_categories[i])
     
-    return (returnX,returnY)
+    return [returnX,returnY]
+
+# opening up a testing set
+X0 = csv_processors.pandasFloatReader('Bort0uMDistalTraining.csv')
+X100 = csv_processors.pandasFloatReader('Bort100nMDistalTraining.csv')
+X0test = csv_processors.pandasFloatReader('Bort0uMDistalTesting.csv')
+X100test = csv_processors.pandasFloatReader('Bort100nMDistalTesting.csv')
 
 
-X0 = csv_processors.codyReader('Wave10bort0nmDistaltraining.csv')
-X100 = csv_processors.codyReader('Wave10bort100nmDistaltraining.csv')
-X0test = csv_processors.codyReader('Wave10bort0nmDistaltesting.csv')
-X100test = csv_processors.codyReader('Wave10bort100nmDistaltesting.csv')
+# set up our testing and training packages
+trainPack= known_data_conjoiners([X0, X100], [0,100])
+testPack = known_data_conjoiners([X0test, X100test], [0,100])
 
-testPack= known_data_conjoiners([X0, X100], [0,100])
-trainPack = known_data_conjoiners((X0test, X100test), (0,100))
-
+#scaling our data seems to improve the SVC's results
+scaler = StandardScaler()
+scaler.fit(trainPack[0])
+testPack[0] = scaler.transform(testPack[0])
+trainPack[0] = scaler.transform(trainPack[0])
 
 svmModel = svm.SVC()
 svmModel.fit(trainPack[0],trainPack[1])
-
-for i in range(len(testPack[1])):
-    print(testPack[1][i],"was the answer and the guess was",svmModel.predict([testPack[0][i]]))
 print(svmModel.score(testPack[0],testPack[1]))
 
+rfcModel = ensemble.RandomForestClassifier()
+rfcModel.fit(trainPack[0], trainPack[1])
+print(rfcModel.score(testPack[0],testPack[1]))
+
+mlpModel = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(15,), random_state=1)
+mlpModel.fit(trainPack[0], trainPack[1])
+print(mlpModel.score(testPack[0],testPack[1]))

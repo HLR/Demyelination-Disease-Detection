@@ -15,13 +15,13 @@ import numpy as np
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 data_folder_path = os.path.join(script_dir, "Data Files")
 # ^ "Data Files" is the folder we keep all our training csvs in
-
-
-def wave10reader(fileName):
-    with open(os.path.join(data_folder_path, fileName), 'r', ) as source:
-        return pandas.read_csv(source,index_col=0)
         
-def codyReader(fileName):
+def pandasFloatReader(fileName):
+    """
+    The major file-reading function of our repository at the moment. This
+    ignores wave label columns and takes the rest as 2D floats
+    """
+    
     with open(os.path.join(data_folder_path, fileName), 'r') as f:
         #creates the pandas csv_reader-generated DataFrame
         reader = pandas.read_csv(f, sep = None, engine = 'python', header = None)
