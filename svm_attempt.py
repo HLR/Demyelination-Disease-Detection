@@ -19,7 +19,7 @@ from sklearn import svm
 from sklearn import ensemble
 import csv
 import os
-import numpy as np
+import features
 import pylab as pl
 import matplotlib.pyplot as plt
 from sklearn.utils import shuffle
@@ -35,35 +35,23 @@ def known_data_conjoiners(arrays, respective_categories):
     as well as respective_categories, an array whose values at an indices
     represent arrays' category at the same index
     
-    This function returns a tuple that easily pops into many machine learning
-    functions provided by scikit
-        returnX= the concatenated sample list
-        returnY= the generated target list
+    This function returns the arrays conjoined into a single array, returnX
+    along with a conjoined list of their respective categories
     """
     
-    # initialize returned arrays
     returnX = []
     returnY = []
     
-    # build said arrays by taking all samples from arrays--the input,
-    # extracting relevant features, and then jamming that into return X
-    # At the end of processing our sample, throw its category into return Y
     for i in range(len(arrays)):
-        imax = np.amax(arrays[i], axis = 1)
-        imin = np.amin(arrays[i], axis = 1)
-        imaxi = np.argmax(arrays[i], axis = 1)
-        imini = np.argmin(arrays[i], axis = 1)
-        
         for j in range(len(arrays[i])):
-            addSample = []
-            addSample.append(imax[j])
-            addSample.append(imin[j])
-            addSample.append(imaxi[j])
-            addSample.append(imini[j])
-            returnX.append(addSample)
+            returnX.append(arrays[i][j])
             returnY.append(respective_categories[i])
-    
-    return [returnX,returnY]
+            
+    featurelist = [features.resting_potential_before_ap]
+    returnX = features.feature_loader(returnX, featurelist)
+    return [returnX, returnY]
+
+
 
 # opening up a testing set
 X0 = csv_processors.pandasFloatReader('Bort0uMDistalTraining.csv')
