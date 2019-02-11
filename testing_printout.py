@@ -10,6 +10,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPClassifier
 from sklearn import svm
 from sklearn import ensemble
+from openpyxl import Workbook
 import csv
 import numpy as np
 import os
@@ -44,6 +45,27 @@ def dataPrep(arrays, respective_categories, featureList):
     returnX = features.feature_loader(returnX, featureList)
     return [returnX, returnY]
 
+def prepLine(switches, rtuple):
+    for i in rtuple:
+        switches.append(i)
+    return switches
+
+def addLine(line, sheet):
+    rowmax = sheet.max_row+1
+    for i in range(len(line)):
+        sheet.cell(column = i + 1, row = rowmax, value = line[i])
+# this initializes our Excel workbook to output
+printoutwb = Workbook()
+# initializing our Excel sheets to output
+ws0 = printoutwb.create_sheet("All Data Dumped")
+ws1 = printoutwb.create_sheet("1 Feature")
+ws2 = printoutwb.create_sheet("2 Features")
+ws3 = printoutwb.create_sheet("3 Features")
+ws4 = printoutwb.create_sheet("4 Features")
+ws5 = printoutwb.create_sheet("5 Features")
+ws6 = printoutwb.create_sheet("6 Features")
+
+
 
 
 # opening up a testing set
@@ -58,11 +80,28 @@ X100test = csv_processors.pandasFloatReader('Bort100nMDistalTesting.csv')
 testMaster = np.ndarray(shape = (2,2,2,2,2,2,3))
 randomFeatures = np.random.choice(features.featureList, 6, replace = False)
 
-#scaling our data seems to improve the SVC's results
-scaler = StandardScaler()
+
+for sheet in printoutwb:
+    for col in range(1, len(randomFeatures)+ 1):
+        sheet.cell(column= col, row= 1, value = randomFeatures[col-1].__name__)
+printoutwb.save('printout.xlsx')
+
+
+
+#create machine learning models
 svmModel = svm.SVC()
 rfcModel = ensemble.RandomForestClassifier()
 mlpModel = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(15,), random_state=1)
+
+#scaling our data seems to improve the SVC's results
+scaler = StandardScaler()
+
+test1= []
+test2= []
+test3= []
+test4= []
+test5= []
+test6= []
 
 for d0 in [0,1]:
     for d1 in [0,1]:
@@ -70,6 +109,7 @@ for d0 in [0,1]:
             for d3 in [0,1]:
                 for d4 in [0,1]:
                     for d5 in [0,1]:
+                        dim = [d0,d1,d2,d3,d4,d5]
                         testList = []
                         if d0 == 1:
                             testList.append(randomFeatures[0])
@@ -105,4 +145,26 @@ for d0 in [0,1]:
                             
                             testMaster[d0][d1][d2][d3][d4][d5] = \
                             plugTuple
-                            print(testMaster[d0][d1][d2][d3][d4][d5])
+                            
+                            if len(testList) == 1:
+                                test1.append(plugTuple)
+                                print(prepLine(dim, plugTuple))
+                                addLine(prepLine(dim, plugTuple), ws1)
+                            elif len(testList) == 2:
+                                test2.append(plugTuple)
+                                addLine(prepLine(dim, plugTuple), ws2)
+                            elif len(testList) == 3:
+                                test3.append(plugTuple)
+                                addLine(prepLine(dim, plugTuple), ws3)
+                            elif len(testList) == 4:
+                                test4.append(plugTuple)
+                                addLine(prepLine(dim, plugTuple), ws4)
+                            elif len(testList) == 5:
+                                test5.append(plugTuple)
+                                addLine(prepLine(dim, plugTuple), ws5)
+                            elif len(testList) == 6:
+                                test6.append(plugTuple)
+                                addLine(prepLine(dim, plugTuple), ws6)
+                            
+
+printoutwb.save('printout.xlsx')
