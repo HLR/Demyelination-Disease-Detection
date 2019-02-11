@@ -9,6 +9,8 @@ Created on Sat Jan 19 11:30:36 2019
 import numpy as np
 import statistics as stats
 
+
+
 def feature_loader(array, featurelist):
     """
     Here is what I want from this function:
@@ -69,6 +71,9 @@ def resting_potential_before_ap(array):
     max_time = max_value_i(array)
     returnX = []
     for x in range(len(max_time)):
-        print(array[x][max_time[x]- 75: max_time[x] -50])
+        # print(array[x][max_time[x]- 75: max_time[x] -50])
         returnX.append(stats.median(array[x][max_time[x]- 75: max_time[x] -50]))
     return returnX
+
+featureList = [max_value, min_value, max_value_i, min_value_i, \
+               absolute_refractory, resting_potential_before_ap]

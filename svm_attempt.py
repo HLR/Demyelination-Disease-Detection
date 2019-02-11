@@ -47,8 +47,8 @@ def known_data_conjoiners(arrays, respective_categories):
             returnX.append(arrays[i][j])
             returnY.append(respective_categories[i])
             
-    featurelist = [features.resting_potential_before_ap]
-    returnX = features.feature_loader(returnX, featurelist)
+    featuresToTest = [features.absolute_refractory]
+    returnX = features.feature_loader(returnX, featuresToTest)
     return [returnX, returnY]
 
 
