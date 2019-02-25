@@ -10,16 +10,16 @@ import numpy as np
 import statistics as stats
 
 
-
+"""
+This feature will take in an array and a list of features to be extracted
+and it returns an array of the initial array's length by num of features
+"""
 def feature_loader(array, featurelist):
     """
     Here is what I want from this function:
         -I want to be able pass it
             1) an array that the function will extract features from
             2) the list of features to extract
-        -I want to do it in such a way that I don't have to construct
-        a massive case by case tree to grab the features. getattr() seems
-        like a function that I may use to accomplish this.
     """
     returnX = []
     
@@ -34,25 +34,45 @@ def feature_loader(array, featurelist):
         returnX.append(addSample)
         
     return returnX
+
+"""
+This helper function grabs only the numerical data points from a wave function
+"""
+def wavegrab(array):
+    rows1= np.array(array)
+    returner = rows1[:,1:len(rows1[0])-2]
+    return returner.astype(float).tolist()
         
+def volt(array):
+    wavestrings = np.array(array)[:,0]
+    wavefloat = []
+    for i in range(len(wavestrings)):
+        wavefloat.append(float(wavestrings[i][4:]))
+    return wavefloat
+
 def max_value(array):
-    return np.amax(array, axis = 1)
+    wave = wavegrab(array)
+    return np.amax(wave, axis = 1)
 
 def min_value(array):
-    return np.amin(array, axis = 1)
+    wave = wavegrab(array)
+    return np.amin(wave, axis = 1)
 
 def max_value_i(array):
-    return np.argmax(array, axis = 1)
+    wave = wavegrab(array)
+    return np.argmax(wave, axis = 1)
 
 def min_value_i(array):
-    return np.argmin(array, axis = 1)
+    wave = wavegrab(array)
+    return np.argmin(wave, axis = 1)
 
 def absolute_refractory(array):
-    max_time = max_value_i(array)
-    min_time = min_value_i(array)
+    wave = wavegrab(array)
+    max_time = max_value_i(wave)
+    min_time = min_value_i(wave)
     
     returnX = []
-    for i in range(len(array)):
+    for i in range(len(wave)):
         returnX.append(min_time[i] - max_time[i])
         
     return returnX
@@ -68,12 +88,16 @@ def resting_potential_before_ap(array):
     
     A sequel function will do the same but for after the action potential
     """
-    max_time = max_value_i(array)
+    wave = wavegrab(array)
+    
+    max_time = max_value_i(wave)
     returnX = []
     for x in range(len(max_time)):
         # print(array[x][max_time[x]- 75: max_time[x] -50])
-        returnX.append(stats.median(array[x][max_time[x]- 75: max_time[x] -50]))
+        returnX.append(stats.median(wave[x][max_time[x]- 75: max_time[x] -50]))
     return returnX
 
+#commented out resting_potential_before_ap!
 featureList = [max_value, min_value, max_value_i, min_value_i, \
-               absolute_refractory, resting_potential_before_ap]
+               absolute_refractory, \
+               volt]

@@ -17,15 +17,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPClassifier
 from sklearn import svm
 from sklearn import ensemble
-import csv
-import os
 import features
-import pylab as pl
-import matplotlib.pyplot as plt
-from sklearn.utils import shuffle
-import math
-import random
-from sklearn.externals import joblib
 import csv_processors
 
 def known_data_conjoiners(arrays, respective_categories):
