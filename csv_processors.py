@@ -17,8 +17,8 @@ data_folder_path = os.path.join(script_dir, "Data Files")
         
 def pandasFloatReader(fileName):
     """
-    The major file-reading function of our repository at the moment. This
-    ignores wave label columns and takes the rest as 2D floats
+    The major file-reading function of our repository at the moment.
+    This no longer ignores wavelabel columns.
     """
     
     with open(os.path.join(data_folder_path, fileName), 'r') as f:

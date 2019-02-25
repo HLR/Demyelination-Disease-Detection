@@ -10,21 +10,48 @@ Created on Sun Feb 10 17:02:29 2019
 The following imports are all classifiers or scalers used for data
 classification
 """
-from sklearn import ensemble
 from sklearn import svm
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neural_network import MLPClassifier
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler 
 
-# This is a Bernoulli Restricted Boltzmann Machine
-# It is an autoencoder we use to compress features
+"""
+This is a Bernoulli Restricted Boltzmann Machine
+It is an autoencoder we use to compress features
+"""
 from sklearn.neural_network import BernoulliRBM
 
+import mlschemes
 import csv_processors
 import features
 import numpy as np
+from sklearn.cross_validation import train_test_split
 from openpyxl import Workbook
+
+def buildArrays(arrays, respective_categories):
+    """
+    params:
+        arrays- a set of arrays,
+        each of shape n_i by m with
+                n = the number of samples
+                n_i = the number of samples in this array
+                m = the number of features per sample
+        and each containing one target category of data
+        respective_categories- an array whose values at an indices represent
+        arrays' category at the same index
+        
+    returns:
+        [X,y]:
+            X- a set of arrays of shape n by m
+            y- 1D array of target values at X[i]
+    """
+    X = []
+    y = []
+    
+    for i in range(len(arrays)):
+        for j in range(len(arrays[i])):
+            X.append(arrays[i][j])
+            y.append(respective_categories[i])
+    
+    return [X,y]
 
 # this runs our full wave through a autoencoder to compress it
 def bernoulliCompress(arrays, respective_categories, learning_rate):
@@ -42,6 +69,10 @@ def bernoulliCompress(arrays, respective_categories, learning_rate):
             new_X- numpy array of shape [n_samples, n_features_new]
             y- array containing target values for n samples
             rbm- the Bernoulli transformer
+            
+    Update: After hypertuning, it appears that learning rate does not really
+    matter too much in these cases.
+    .1 works as a good default unless further tuning is required.
     """
     
     X = []
@@ -63,7 +94,7 @@ def bernoulliCompress(arrays, respective_categories, learning_rate):
 
 def svm_on_BRBM(training_arrays, training_respective_categories, \
                 testing_arrays, testing_respective_categories, \
-                learning_rate):
+                learning_rate = .1):
     """
     params:
         training_arrays- a set of arrays for training, each containing one 
@@ -101,7 +132,9 @@ def svm_on_BRBM(training_arrays, training_respective_categories, \
     
     return [learning_rate, classifier.score(comptestX, testY)]
 
-def dataPrep(arrays, respective_categories, featureList):
+
+
+# def dataPrep(arrays, respective_categories, featureList):
     """
     This function takes in arrays, a set of arrays, each containing
     one target category of data,
@@ -111,7 +144,7 @@ def dataPrep(arrays, respective_categories, featureList):
     This function returns the arrays conjoined into a single array, returnX
     along with a conjoined list of their respective categories
     """
-    
+    """
     returnX = []
     returnY = []
     
@@ -122,9 +155,11 @@ def dataPrep(arrays, respective_categories, featureList):
             
     returnX = features.feature_loader(returnX, featureList)
     return [returnX, returnY]
+"""
+
 
 def prepLine(switches, rtuple):
-    arrayLine = switches
+    arrayLine = switches.copy()
     for i in rtuple:
         arrayLine.append(i)
     return arrayLine
@@ -133,21 +168,14 @@ def addLine(line, sheet):
     rowmax = sheet.max_row+1
     for i in range(len(line)):
         sheet.cell(column = i + 1, row = rowmax, value = line[i])
-"""
-# this initializes our Excel workbook to output
-printoutwb = Workbook()
-# initializing our Excel sheets to output
-ws0 = printoutwb.create_sheet("Maximum Sum")
-ws1 = printoutwb.create_sheet("1 Feature")
-ws2 = printoutwb.create_sheet("2 Features")
-ws3 = printoutwb.create_sheet("3 Features")
-ws4 = printoutwb.create_sheet("4 Features")
-ws5 = printoutwb.create_sheet("5 Features")
-ws6 = printoutwb.create_sheet("6 Features")
-printoutwb.remove(printoutwb['Sheet'])
-"""
+        
+
 
 """
+# TESTSET___AMIODARONE
+
+
+
 # this block loads in the relevant data
 X01d = csv_processors.pandasFloatReader('amiodarone0.1uMdistaltraining.csv')
 X01dtest = csv_processors.pandasFloatReader('amiodarone0.1uMdistaltesting.csv')
@@ -179,6 +207,9 @@ trainingkey = [1, 1, 0, 0, 10, 10, 50, 50, 100, 100]
 testingkey = [1, 1, 0, 0, 10, 10, 50, 50, 100, 100]
 """
 
+# TESTSET___Bortozemib
+
+
 # opening up a testing set
 X0 = csv_processors.pandasFloatReader('Bort0uMDistalTraining.csv')
 X100 = csv_processors.pandasFloatReader('Bort100nMDistalTraining.csv')
@@ -191,12 +222,20 @@ rawtestdata = [X0test, X100test]
 trainingkey = [0,100]
 testingkey = [0, 100]
 
-'''
-# this ndarray will store the values of every machine learning
-# iteration run on every possible combination of 6 randomly selected
-# features
-testMaster = np.ndarray(shape = (2,2,2,2,2,2,5)) #last value is number of \
-# classifiers used
+
+
+# this initializes our Excel workbook to output
+printoutwb = Workbook()
+# initializing our Excel sheets to output
+ws1 = printoutwb.create_sheet("1 Feature")
+ws2 = printoutwb.create_sheet("2 Features")
+ws3 = printoutwb.create_sheet("3 Features")
+ws4 = printoutwb.create_sheet("4 Features")
+ws5 = printoutwb.create_sheet("5 Features")
+ws6 = printoutwb.create_sheet("6 Features")
+printoutwb.remove(printoutwb['Sheet'])
+
+
 
 # this randomly selects 6 of our designed features to test
 # this is done because runtime of this file is O(2^n) where n is the 
@@ -209,33 +248,18 @@ for sheet in printoutwb:
     for i in range(len(keyLine)):
         keyLine[i] = keyLine[i].__name__
     keyLine = keyLine.tolist()
-    keyLine.extend(['svm' , 'rfc' , 'mlp', 'knn', 'gnb'])
-    print(keyLine)
+    keyLine.extend(['scheme' , '50% of training set' , '60%', '70%', '80%', '90%', '100%'])
     addLine(keyLine, sheet)
 
-
-
-#create machine learning models
-svmModel = svm.SVC()
-rfcModel = ensemble.RandomForestClassifier()
-mlpModel = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(15,), random_state=1)
-knnModel = KNeighborsClassifier()
-gnbModel = GaussianNB()
 
 #scaling our data seems to improve the SVC's results
 scaler = StandardScaler()
 
-# these are arrays storing the results of tests on all combos of n features
-test1= []
-test2= []
-test3= []
-test4= []
-test5= []
-test6= []
 
-maxsum = 0
-maxsumi = []
-maxsumt = []
+trainPack = buildArrays(rawtraindata, trainingkey)
+testPack = buildArrays(rawtestdata, testingkey)
+
+
 for d0 in [0,1]:
     for d1 in [0,1]:
         for d2 in [0,1]:
@@ -244,7 +268,7 @@ for d0 in [0,1]:
                     for d5 in [0,1]:
                         dim = [d0,d1,d2,d3,d4,d5]
                         testList = []
-                        plugTuple = []
+                        learningcurves = np.zeros((len(mlschemes.modelList),6))
                         if d0 == 1:
                             testList.append(randomFeatures[0])
                         if d1 == 1:
@@ -257,62 +281,62 @@ for d0 in [0,1]:
                             testList.append(randomFeatures[4])
                         if d5 == 1:
                             testList.append(randomFeatures[5])
-                        
-                        if len(testList) == 0:
-                            testMaster[d0][d1][d2][d3][d4][d5] = [0.0,0.0,0.0,0.0,0.0]
+                            
+                        if not testList:
+                            pass
                         else:
-                            # set up our testing and training packages
-                            trainPack= dataPrep(rawtraindata, trainingkey, testList)
-                            testPack = dataPrep(rawtestdata, testingkey, testList)
                             
-                            scaler.fit(trainPack[0])
-                            testPack[0] = scaler.transform(testPack[0])
-                            trainPack[0] = scaler.transform(trainPack[0])
+                            trainfeatures = features.feature_loader(trainPack[0],\
+                                                                    testList)
+                            testfeatures = features.feature_loader(testPack[0],\
+                                                                   testList)
                             
-                            svmModel.fit(trainPack[0],trainPack[1])
-                            rfcModel.fit(trainPack[0],trainPack[1])
-                            mlpModel.fit(trainPack[0],trainPack[1])
-                            knnModel.fit(trainPack[0],trainPack[1])
-                            gnbModel.fit(trainPack[0],trainPack[1])
                             
-                            plugTuple = [svmModel.score(testPack[0],testPack[1]), \
-                                         rfcModel.score(testPack[0],testPack[1]), \
-                                         mlpModel.score(testPack[0],testPack[1]), \
-                                         knnModel.score(testPack[0],testPack[1]), \
-                                         gnbModel.score(testPack[0],testPack[1])]
-                            
-                            testMaster[d0][d1][d2][d3][d4][d5] = \
-                            plugTuple
-                            
-                            if maxsum < np.sum(plugTuple):
-                                maxsum = np.sum(plugTuple)
-                                maxsumi = dim
-                                maxsumt = plugTuple
-                            
-                            if len(testList) == 1:
-                                test1.append(plugTuple)
-                                addLine(prepLine(dim, plugTuple), ws1)
-                            elif len(testList) == 2:
-                                test2.append(plugTuple)
-                                addLine(prepLine(dim, plugTuple), ws2)
-                            elif len(testList) == 3:
-                                test3.append(plugTuple)
-                                addLine(prepLine(dim, plugTuple), ws3)
-                            elif len(testList) == 4:
-                                test4.append(plugTuple)
-                                addLine(prepLine(dim, plugTuple), ws4)
-                            elif len(testList) == 5:
-                                test5.append(plugTuple)
-                                addLine(prepLine(dim, plugTuple), ws5)
-                            elif len(testList) == 6:
-                                test6.append(plugTuple)
-                                addLine(prepLine(dim, plugTuple), ws6)
-addLine(maxsumi, printoutwb["Maximum Sum"])
+                            for i in range(5):
+                                trainsplitsamples, _ , trainsplitcats, _ = \
+                                train_test_split(trainfeatures, trainPack[1], \
+                                                 test_size = (.5 + (i*.1)))
+                                
+                
+                                for j in range(len(mlschemes.modelList)):
+                                    learningcurves[j][i] = \
+                                    mlschemes.modelList[j](\
+                                            trainsplitsamples,\
+                                            trainsplitcats,\
+                                            testfeatures,\
+                                            testPack[1]
+                                            )
+                                
+                            for j in range(len(mlschemes.modelList)):
+                                learningcurves[j][5] = \
+                                mlschemes.modelList[j](\
+                                        trainfeatures,\
+                                        trainPack[1],\
+                                        testfeatures,\
+                                        testPack[1]
+                                        )
+                                
+                                plugTuple = [mlschemes.modelList[j].__name__]
+                                plugTuple.extend(learningcurves[j])
+                                
+                                
+                                # this is the printout block
+                                if len(testList) == 1:
+                                    addLine(prepLine(dim, plugTuple), ws1)
+                                elif len(testList) == 2:
+                                    addLine(prepLine(dim, plugTuple), ws2)
+                                elif len(testList) == 3:
+                                    addLine(prepLine(dim, plugTuple), ws3)
+                                elif len(testList) == 4:
+                                    addLine(prepLine(dim, plugTuple), ws4)
+                                elif len(testList) == 5:
+                                    addLine(prepLine(dim, plugTuple), ws5)
+                                elif len(testList) == 6:
+                                    addLine(prepLine(dim, plugTuple), ws6)
+                                
+                                plugTuple = []
 
-'''
-for i in np.linspace(1, 3, 10):
-    print(svm_on_BRBM(rawtraindata, trainingkey, \
-                rawtestdata, testingkey, \
-                10**-i))
 
-# printoutwb.save('printout1amio.xlsx')
+
+
+printoutwb.save('learningcurvebort.xlsx')
