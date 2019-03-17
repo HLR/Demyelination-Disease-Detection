@@ -52,11 +52,11 @@ def volt(array):
 
 def max_value(array):
     wave = wavegrab(array)
-    return np.amax(wave, axis = 1)
+    return np.nanmax(wave, axis = 1)
 
 def min_value(array):
     wave = wavegrab(array)
-    return np.amin(wave, axis = 1)
+    return np.nanmin(wave, axis = 1)
 
 def max_value_i(array):
     wave = wavegrab(array)
