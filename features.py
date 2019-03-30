@@ -21,13 +21,19 @@ def feature_loader(array, featurelist):
             1) an array that the function will extract features from
             2) the list of features to extract
     """
+    # this will be the array we return
+    # it will be of shape [sample number] x [number of features]
     returnX = []
     
+    # feature_key will be matrix of shape
+    # [number of features] x [sample number]
+    # note that it is transposed
     feature_key= []
     for i in range(len(featurelist)):
         feature_key.append(featurelist[i](array))
     
     for i in range(len(array)):
+        # this will be the sample that we add to the array we will return
         addSample = []
         for j in range(len(feature_key)):
             addSample.append(feature_key[j][i])

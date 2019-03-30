@@ -47,11 +47,12 @@ def allDrugsBinary():
     rawtestdata = [X0t, XAllt]
     trainingkey = [0, 1]
     testingkey = [0, 1]
+    numcats = 2
     
     trainPack = buildArrays(rawtraindata,trainingkey)
     testPack = buildArrays(rawtestdata, testingkey)
     
-    return trainPack, testPack
+    return trainPack, testPack, numcats
 
 def amiodarone():
     # TESTSET___AMIODARONE
@@ -87,13 +88,12 @@ def amiodarone():
     # this measurement is in tenths of a uM
     trainingkey = [1, 1, 0, 0, 10, 10, 50, 50, 100, 100]
     testingkey = [1, 1, 0, 0, 10, 10, 50, 50, 100, 100]
+    numcats = 5
     
     trainPack = buildArrays(rawtraindata,trainingkey)
     testPack = buildArrays(rawtestdata, testingkey)
     
-    print(trainPack[0])
-    
-    return trainPack, testPack
+    return trainPack, testPack, numcats
 
 def bortozemib():
     # TESTSET___Bortozemib
@@ -110,12 +110,13 @@ def bortozemib():
     
     trainingkey = [0, 100]
     testingkey = [0, 100]    
+    numcats = 2
     
     trainPack = buildArrays(rawtraindata, trainingkey)
     testPack = buildArrays(rawtestdata, testingkey)
     
     
-    return trainPack, testPack
+    return trainPack, testPack, numcats
 
 def allDrugs5Cat():
     # TESTSET___allDrugs5Cat
@@ -136,10 +137,10 @@ def allDrugs5Cat():
     
     trainingkey = [1,2,3,4,5]
     testingkey = [1,2,3,4,5]
+    numcats = 5
     
     trainPack = buildArrays(rawtraindata, trainingkey)
     testPack = buildArrays(rawtestdata, testingkey)
     
-    print(trainPack[0])
     
-    return trainPack, testPack
+    return trainPack, testPack, numcats

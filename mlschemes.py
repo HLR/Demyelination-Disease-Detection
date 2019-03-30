@@ -15,6 +15,7 @@ from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neural_network import MLPClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import precision_recall_fscore_support
 
 svmModel = svm.SVC()
 rfcModel = ensemble.RandomForestClassifier()
@@ -27,30 +28,54 @@ def svm(training_samples, training_categories, \
         testing_samples, testing_categories):
     
     svmModel.fit(training_samples, training_categories)
-    return svmModel.score(testing_samples, testing_categories)
+    
+    decisions = svmModel.predict(testing_samples)
+    prfs = precision_recall_fscore_support(testing_categories, decisions)
+    
+    return [svmModel.score(testing_samples, testing_categories), prfs]
 
 def rfc(training_samples, training_categories, \
         testing_samples, testing_categories):
     
     rfcModel.fit(training_samples, training_categories)
-    return rfcModel.score(testing_samples, testing_categories)
+    
+    decisions = rfcModel.predict(testing_samples)
+    prfs = precision_recall_fscore_support(testing_categories, decisions)
+    
+    return [rfcModel.score(testing_samples, testing_categories), prfs]
     
 def mlp(training_samples, training_categories, \
         testing_samples, testing_categories):
     
     mlpModel.fit(training_samples, training_categories)
-    return mlpModel.score(testing_samples, testing_categories)
+    
+    decisions = mlpModel.predict(testing_samples)
+    prfs = precision_recall_fscore_support(testing_categories, decisions)
+    
+    return [mlpModel.score(testing_samples, testing_categories), prfs]
 
 def knn(training_samples, training_categories, \
         testing_samples, testing_categories):
     
     knnModel.fit(training_samples, training_categories)
-    return knnModel.score(testing_samples, testing_categories)
+    
+    decisions = knnModel.predict(testing_samples)
+    prfs = precision_recall_fscore_support(testing_categories, decisions)
+    
+    return [knnModel.score(testing_samples, testing_categories), prfs]
 
 def gnb(training_samples, training_categories, \
         testing_samples, testing_categories):
     
     gnbModel.fit(training_samples, training_categories)
-    return gnbModel.score(testing_samples, testing_categories)
+    
+    decisions = gnbModel.predict(testing_samples)
+    prfs = precision_recall_fscore_support(testing_categories, decisions)
+    
+    return [gnbModel.score(testing_samples, testing_categories), prfs]
 
-modelList = [svm, rfc, mlp, knn, gnb]
+'''
+    commented out for debugging purposes:
+    svm, knn, gnb
+'''
+modelList = [rfc, mlp]
