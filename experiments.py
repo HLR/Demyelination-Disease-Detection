@@ -49,6 +49,7 @@ def allDrugsBinary():
     testingkey = [0, 1]
     numcats = 2
     
+    
     trainPack = buildArrays(rawtraindata,trainingkey)
     testPack = buildArrays(rawtestdata, testingkey)
     
@@ -122,15 +123,25 @@ def allDrugs5Cat():
     # TESTSET___allDrugs5Cat
     
     Xa = csv_processors.pandasFloatReader('amiotrainingdistal.csv')
+    print(Xa.shape)
     XaT = csv_processors.pandasFloatReader('amiotestingdistal.csv')
+    print(XaT.shape)
     Xv = csv_processors.pandasFloatReader('vincritrainingdistal.csv')
+    print(Xv.shape)
     XvT = csv_processors.pandasFloatReader('vincritestingdistal.csv')
+    print(XvT.shape)
     Xp = csv_processors.pandasFloatReader('paclitrainingdistal.csv')
+    print(Xp.shape)
     XpT = csv_processors.pandasFloatReader('paclitestingdistal.csv')
+    print(XpT.shape)
     Xo = csv_processors.pandasFloatReader('oxalitrainingdistal.csv')
+    print(Xo.shape)
     XoT = csv_processors.pandasFloatReader('oxalitestingdistal.csv')
+    print(XoT.shape)
     Xb = csv_processors.pandasFloatReader('borttrainingdistal.csv')
+    print(Xb.shape)
     XbT = csv_processors.pandasFloatReader('borttestingdistal.csv')
+    print(XbT.shape)
     
     rawtraindata = [Xa, Xv, Xp, Xo, Xb]
     rawtestdata = [XaT, XvT, XpT, XoT, XbT]

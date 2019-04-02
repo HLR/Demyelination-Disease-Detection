@@ -8,7 +8,7 @@ Created on Sun Feb 10 17:02:29 2019
 
 # the following is a data scaler which improves performance
 from sklearn.preprocessing import StandardScaler 
-
+from sklearn.metrics import confusion_matrix
 import experiments
 import mlschemes
 import features
@@ -16,9 +16,11 @@ import numpy as np
 from sklearn.cross_validation import train_test_split
 from openpyxl import Workbook
 from autoencoderRBM import svm_on_BRBM
+from sklearn import ensemble
+
 
 """
-this funciton creates an array, each representing a cell's data to be plugged
+this function creates an array, each representing a cell's data to be plugged
 into an Excel sheet.
 
 This function is specialized for the massive printouts below
@@ -47,12 +49,37 @@ def addLine(line, sheet):
 """
 configuration variables
 """
-trainPack, testPack, numcats = experiments.allDrugsBinary()
+trainPack, testPack, numcats = experiments.allDrugs5Cat()
 outputFileName = 'amiodebug.xlsx'
-f1Threshold = .4
+f1Threshold = .11
 # populate learning Splits with the fractions of the training sets that you
 # would like to test. Always include 1.
 learningSplits = [1]
+
+#scaling our data seems to improve the SVC's results
+scaler = StandardScaler()
+
+
+"""
+confusion matrix work!
+"""
+print('got here')
+clf = ensemble.RandomForestClassifier()
+flist = [features.min_value, features.min_value_i, features.max_value]
+trainfeatures = features.feature_loader(trainPack[0], flist)
+testfeatures = features.feature_loader(testPack[0], flist)
+
+trainfeatures = scaler.fit_transform(trainfeatures)
+testfeatures = scaler.transform(testfeatures)
+
+print('got here1')
+clf.fit(trainfeatures, trainPack[1])
+
+print('got here2')
+y_pred = clf.predict(testfeatures)
+print(confusion_matrix(testPack[1], y_pred))
+
+
 
 # this initializes our Excel workbook to output
 printoutwb = Workbook()
@@ -85,11 +112,10 @@ for i in range(len(printoutwb.worksheets)-1):
     keyLine = keyLine.tolist()
     keyLine.extend(['scheme'])
     for x in learningSplits:
-        keyLine.extend([str(x*100) + "% training", 'precision','recall','F1'])
+        keyLine.extend([str(x*100) + "% training", 'precision','recall','F1', 'cross-validation mean'])
     addLine(keyLine, printoutwb.worksheets[i])
 
-#scaling our data seems to improve the SVC's results
-scaler = StandardScaler()
+
 
 """this block will test every possible combination of the loaded features
 with every possible machine learning scheme that we load in"""
@@ -99,9 +125,16 @@ for d0 in [0,1]:
     for d1 in [0,1]:
         for d2 in [0,1]:
             for d3 in [0,1]:
-                for d4 in [0,1]:
-                    for d5 in [0,1]:
-                        
+                for d4 in [0]:
+                    """
+                    set above for loop to <<for d4 in [0,1]:>>
+                    in final iteration
+                    """
+                    for d5 in [0]:
+                        """
+                        set above for loop to <<for d5 in [0,1]:>>
+                        in final iteration
+                        """
                         # dim stores the current combination of features
                         # being used
                         # dim stores the state of each feature
@@ -146,6 +179,8 @@ for d0 in [0,1]:
                             testfeatures = features.feature_loader(testPack[0],\
                                                                    testList)
                             
+                            trainfeatures = scaler.fit_transform(trainfeatures)
+                            testfeatures = scaler.transform(testfeatures)
                             # BLOCK
                             # this is our learning curve stuff
                             # for each train-test-split
@@ -161,7 +196,7 @@ for d0 in [0,1]:
                                     # j is the row, corresponding to the model
                                     # i is the column, corresponding to the
                                     # test size
-                                    score, data = (\
+                                    score, data, valscores = (\
                                     mlschemes.modelList[j](\
                                             trainsplitsamples,\
                                             trainsplitcats,\
@@ -176,6 +211,8 @@ for d0 in [0,1]:
                                     plugarrays[j].append(data[0][0])
                                     plugarrays[j].append(data[1][0])
                                     plugarrays[j].append(data[2][0])
+                                    
+                                    plugarrays[j].append(valscores.mean())
                                     
                                     if data[2][0] > f1Threshold and i == 1:
                                         addLine(plugarrays[j], maxws)

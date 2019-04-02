@@ -46,6 +46,7 @@ This helper function grabs only the numerical data points from a wave function
 """
 def wavegrab(array):
     rows1= np.array(array)
+    print(rows1.shape)
     returner = rows1[:,1:len(rows1[0])-2]
     return returner.astype(float).tolist()
         

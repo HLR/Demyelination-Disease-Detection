@@ -16,6 +16,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.neural_network import MLPClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import precision_recall_fscore_support
+from sklearn.model_selection import cross_val_score
 
 svmModel = svm.SVC()
 rfcModel = ensemble.RandomForestClassifier()
@@ -31,8 +32,10 @@ def svm(training_samples, training_categories, \
     
     decisions = svmModel.predict(testing_samples)
     prfs = precision_recall_fscore_support(testing_categories, decisions)
+    scores = cross_val_score(svmModel, testing_samples, testing_categories,\
+                             cv=10)
     
-    return [svmModel.score(testing_samples, testing_categories), prfs]
+    return [svmModel.score(testing_samples, testing_categories), prfs, scores]
 
 def rfc(training_samples, training_categories, \
         testing_samples, testing_categories):
@@ -41,8 +44,10 @@ def rfc(training_samples, training_categories, \
     
     decisions = rfcModel.predict(testing_samples)
     prfs = precision_recall_fscore_support(testing_categories, decisions)
+    scores = cross_val_score(rfcModel, testing_samples, testing_categories,\
+                             cv=10)
     
-    return [rfcModel.score(testing_samples, testing_categories), prfs]
+    return [rfcModel.score(testing_samples, testing_categories), prfs, scores]
     
 def mlp(training_samples, training_categories, \
         testing_samples, testing_categories):
@@ -51,8 +56,10 @@ def mlp(training_samples, training_categories, \
     
     decisions = mlpModel.predict(testing_samples)
     prfs = precision_recall_fscore_support(testing_categories, decisions)
+    scores = cross_val_score(mlpModel, testing_samples, testing_categories,\
+                             cv=10)
     
-    return [mlpModel.score(testing_samples, testing_categories), prfs]
+    return [mlpModel.score(testing_samples, testing_categories), prfs, scores]
 
 def knn(training_samples, training_categories, \
         testing_samples, testing_categories):
@@ -61,8 +68,10 @@ def knn(training_samples, training_categories, \
     
     decisions = knnModel.predict(testing_samples)
     prfs = precision_recall_fscore_support(testing_categories, decisions)
+    scores = cross_val_score(knnModel, testing_samples, testing_categories,\
+                             cv=10)
     
-    return [knnModel.score(testing_samples, testing_categories), prfs]
+    return [knnModel.score(testing_samples, testing_categories), prfs, scores]
 
 def gnb(training_samples, training_categories, \
         testing_samples, testing_categories):
@@ -71,8 +80,10 @@ def gnb(training_samples, training_categories, \
     
     decisions = gnbModel.predict(testing_samples)
     prfs = precision_recall_fscore_support(testing_categories, decisions)
+    scores = cross_val_score(gnbModel, testing_samples, testing_categories,\
+                             cv=10)
     
-    return [gnbModel.score(testing_samples, testing_categories), prfs]
+    return [gnbModel.score(testing_samples, testing_categories), prfs, scores]
 
 '''
     commented out for debugging purposes:
