@@ -50,8 +50,8 @@ def addLine(line, sheet):
 configuration variables
 """
 trainPack, testPack, numcats = experiments.allDrugs5Cat()
-outputFileName = 'amiodebug.xlsx'
-f1Threshold = .11
+outputFileName = 'f_allDrugs5Cat.xlsx'
+f1Threshold = .7
 # populate learning Splits with the fractions of the training sets that you
 # would like to test. Always include 1.
 learningSplits = [1]
@@ -62,6 +62,7 @@ scaler = StandardScaler()
 
 """
 confusion matrix work!
+"""
 """
 print('got here')
 clf = ensemble.RandomForestClassifier()
@@ -78,7 +79,7 @@ clf.fit(trainfeatures, trainPack[1])
 print('got here2')
 y_pred = clf.predict(testfeatures)
 print(confusion_matrix(testPack[1], y_pred))
-
+"""
 
 
 # this initializes our Excel workbook to output
@@ -125,12 +126,12 @@ for d0 in [0,1]:
     for d1 in [0,1]:
         for d2 in [0,1]:
             for d3 in [0,1]:
-                for d4 in [0]:
+                for d4 in [0,1]:
                     """
                     set above for loop to <<for d4 in [0,1]:>>
                     in final iteration
                     """
-                    for d5 in [0]:
+                    for d5 in [0,1]:
                         """
                         set above for loop to <<for d5 in [0,1]:>>
                         in final iteration

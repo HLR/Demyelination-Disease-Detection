@@ -89,4 +89,4 @@ def gnb(training_samples, training_categories, \
     commented out for debugging purposes:
     svm, knn, gnb
 '''
-modelList = [rfc, mlp]
+modelList = [rfc, mlp, svm, knn, gnb]
