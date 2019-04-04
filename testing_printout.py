@@ -61,27 +61,6 @@ scaler = StandardScaler()
 
 
 """
-confusion matrix work!
-"""
-"""
-print('got here')
-clf = ensemble.RandomForestClassifier()
-flist = [features.min_value, features.min_value_i, features.max_value]
-trainfeatures = features.feature_loader(trainPack[0], flist)
-testfeatures = features.feature_loader(testPack[0], flist)
-
-trainfeatures = scaler.fit_transform(trainfeatures)
-testfeatures = scaler.transform(testfeatures)
-
-print('got here1')
-clf.fit(trainfeatures, trainPack[1])
-
-print('got here2')
-y_pred = clf.predict(testfeatures)
-print(confusion_matrix(testPack[1], y_pred))
-"""
-
-
 # this initializes our Excel workbook to output
 printoutwb = Workbook()
 # initializing our Excel sheets to output
@@ -94,6 +73,7 @@ ws6 = printoutwb.create_sheet("6 Features")
 maxws = printoutwb.create_sheet("Highscores")
 autows = printoutwb.create_sheet("Autoencoder")
 printoutwb.remove(printoutwb['Sheet'])
+"""
 
 # this randomly selects 6 of our designed features to test
 # this is done because runtime of this file is O(2^n) where n is the 
@@ -120,7 +100,6 @@ for i in range(len(printoutwb.worksheets)-1):
 
 """this block will test every possible combination of the loaded features
 with every possible machine learning scheme that we load in"""
-
 # this block will turn on or off every feature to use every possible combo
 for d0 in [0,1]:
     for d1 in [0,1]:
