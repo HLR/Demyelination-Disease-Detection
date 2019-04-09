@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+	<h1>Machine Learning Model Capstone Website</h1>
+
+	<head>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+	</head>
+
+	<body>
+
+		<form action = "http://localhost:5000/uploader" method = "POST" enctype = "multipart/form-data">
+
+			<h3>Drug Input Files</h3>
+
+			<input type="radio" name="drug" value="AllDrugsBi"> All Drug Categories - Binary Inputs <br>
+			<input type="radio" name="drug" value="AllDrugs5"> All Drug Categories - 5 Drugs<br>
+			<input type="radio" name="drug" value="Amiodarone"> Amiodarone<br>
+			<input type="radio" name="drug" value="Bortozemib"> Bortozemib<br>
+
+			<div></div>
+
+			<h3>Machine Learning Features</h3>
+
+			<input type="checkbox" name="feature" value="volt"> Voltage<br>
+			<input type="checkbox" name="feature" value="mav"> Max Value<br>
+			<input type="checkbox" name="feature" value="mavi"> Max Value Index<br>
+			<input type="checkbox" name="feature" value="miv"> Minimum Value<br>
+			<input type="checkbox" name="feature" value="mivi"> Minimum Value Index<br>
+			<input type="checkbox" name="feature" value="ar"> Absolute Refractory<br>
+
+
+			<h3>Machine Learning Schemes</h3>
+
+			<input type="checkbox" name="scheme" value="mlp"> Multi-Layer Perceptron<br>
+			<input type="checkbox" name="scheme" value="svc"> Support Vecter Classifier<br>
+			<input type="checkbox" name="scheme" value="gnb"> Gaussian Naive Bayes<br>
+
+
+			<input class="button-container" type="submit">
+
+		</form>
+
+	</body>
+
+</html>
