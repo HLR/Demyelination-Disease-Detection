@@ -1,0 +1,33 @@
+<!--
+	@author: shees-a
+	
+	This is the template that allows the user to input in their own file. However, 
+	while it does get the file that the user uploads the function @app.route('/treat') 
+	in flasking.py does not properly get the new accuracy score with the previously saved 
+	model. 
+-->
+
+
+<!DOCTYPE html>
+<html>
+
+	<h1>Machine Learning Model Capstone Website</h1>
+
+	<head>
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+	</head>
+
+	<body>
+
+		<form action = "http://localhost:5000/treat" method = "POST" enctype = "multipart/form-data">
+
+			
+			<label>Upload Your Own Drug Input File: </label>
+			<input type="file" name="File"> 
+			<input class="button-container" type="submit">
+
+		</form>
+
+	</body>
+
+</html>

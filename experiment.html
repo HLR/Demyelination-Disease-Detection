@@ -1,0 +1,62 @@
+<!--
+	@author: shees-a
+This is the home page for the user when the website is first loaded. 
+The main options for the user are which drug files to load in, which features to take in, 
+and which schemes they want to run. A user can only select in one set of drug files but can 
+select multiple features and schemes. 
+
+All new templates should be in the "templates" folder. 
+ -->
+
+
+
+<!DOCTYPE html>
+<html>
+
+	<h1>Machine Learning Model Capstone Website</h1>
+
+	<head>
+		<!-- All stylesheets with css should be put into this format for optimal usage. All CSS templates 
+			have to be in the "static" folder. -->
+
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+	</head>
+
+	<body>
+
+		<form action = "http://localhost:5000/uploader" method = "POST" enctype = "multipart/form-data">
+
+			<h3>Drug Input Files</h3>
+
+			<input type="radio" name="drug" value="AllDrugsBi"> All Drug Categories - Binary Inputs <br>
+			<input type="radio" name="drug" value="AllDrugs5"> All Drug Categories - 5 Drugs<br>
+			<input type="radio" name="drug" value="Amiodarone"> Amiodarone<br>
+			<input type="radio" name="drug" value="Bortozemib"> Bortozemib<br>
+
+			<div></div>
+
+			<h3>Machine Learning Features</h3>
+
+			<input type="checkbox" name="feature" value="volt"> Voltage<br>
+			<input type="checkbox" name="feature" value="mav"> Max Value<br>
+			<input type="checkbox" name="feature" value="mavi"> Max Value Index<br>
+			<input type="checkbox" name="feature" value="miv"> Minimum Value<br>
+			<input type="checkbox" name="feature" value="mivi"> Minimum Value Index<br>
+			<input type="checkbox" name="feature" value="ar"> Absolute Refractory<br>
+
+
+			<h3>Machine Learning Schemes</h3>
+
+			<input type="checkbox" name="scheme" value="mlp"> Multi-Layer Perceptron<br>
+			<input type="checkbox" name="scheme" value="svc"> Support Vecter Classifier<br>
+			<input type="checkbox" name="scheme" value="gnb"> Gaussian Naive Bayes<br>
+			<input type="checkbox" name="scheme" value="knn"> K Nearest Neighbors<br>
+
+
+			<input class="button-container" type="submit">
+
+		</form>
+
+	</body>
+
+</html>
